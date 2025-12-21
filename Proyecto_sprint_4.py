@@ -17,3 +17,8 @@ print(df_products)
 print(df_aisles)
 print(df_departments)
 print(df_orderproducts)
+
+#verificar duplicados en el primer data frame, df_orders
+
+df_orders = df_orders.drop_duplicates()
+print(df_orders)
