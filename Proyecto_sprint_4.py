@@ -33,5 +33,10 @@ miercoles_2am
 
 # Vuelve a verificar únicamente si hay IDs duplicados de pedidos
 pedidos_duplicados = df_orders["order_id"]
-pedidos_duplicados.drop_duplicates()
+pedidos_duplicados.drop_duplicates(inplace=True)
 pedidos_duplicados
+
+# ----------------------------- verificar duplicados en el 2do data frame, df_products
+
+df_products.drop_duplicates(inplace=True)
+df_products
