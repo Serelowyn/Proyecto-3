@@ -18,7 +18,20 @@ print(df_aisles)
 print(df_departments)
 print(df_orderproducts)
 
-#verificar duplicados en el primer data frame, df_orders
+# ----------------------------- verificar duplicados en el primer data frame, df_orders
 
 df_orders = df_orders.drop_duplicates()
 print(df_orders)
+
+# Basándote en tus hallazgos,
+# Verifica todos los pedidos que se hicieron el miércoles a las 2:00 a.m.
+#### ---- Dias de la semana 0 domingo, horas 2 para am, formato 24H
+
+miercoles_2am = df_orders[(df_orders["order_dow"] == 3) & (df_orders["order_hour_of_day"] == 2)]
+miercoles_2am.drop_duplicates()
+miercoles_2am
+
+# Vuelve a verificar únicamente si hay IDs duplicados de pedidos
+pedidos_duplicados = df_orders["order_id"]
+pedidos_duplicados.drop_duplicates()
+pedidos_duplicados
