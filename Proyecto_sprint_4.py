@@ -40,3 +40,8 @@ pedidos_duplicados
 
 df_products.drop_duplicates(inplace=True)
 df_products
+
+# Revisa únicamente si hay ID de productos duplicados
+prod_duplicados = df_products["product_id"]
+prod_duplicados.drop_duplicates(inplace=True)
+prod_duplicados
