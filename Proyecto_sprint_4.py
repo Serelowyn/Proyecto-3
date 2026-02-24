@@ -36,7 +36,7 @@ pedidos_duplicados = df_orders["order_id"]
 pedidos_duplicados.drop_duplicates(inplace=True)
 pedidos_duplicados
 
-# ----------------------------- verificar duplicados en el 2do data frame, df_products
+# ------------------ verificar duplicados en el 2do data frame, df_products
 
 df_products.drop_duplicates(inplace=True)
 df_products
@@ -76,8 +76,26 @@ df_aisles[df_aisles["aisle_id"].duplicated()]
 ### ----------------------- `order_products` data frame --------------------
 
 # Revisa si hay filas totalmente duplicadas
-df_orderproducts[df_orderproducts.duplicated()]
+duplicates_order = df_orderproducts[df_orderproducts.duplicated()]
+print(duplicates_order)
 
 # Vuelve a verificar si hay cualquier otro duplicado engañoso
-df_orderproducts[df_orderproducts.duplicated(subset=["order_id", "product_id"])]
+duplicado_enganioso = df_orderproducts[df_orderproducts.duplicated(subset=["order_id", "product_id"])]
+print(duplicado_enganioso)
 
+
+### --------------- products DATAFRAME --------------------
+
+# Encuentra los valores ausentes en la columna 'product_name'
+val_aus_prod = df_products[df_products["product_name"].isna()]
+val_aus_prod
+
+
+# Usa las tablas department y aisle para revisar los datos del pasillo con ID 100 y el departamento con ID 21
+id100 = df_aisles[df_aisles["aisle_id"] == 100]
+id21 = df_departments[df_departments["department_id"] == 21]
+id100
+id21
+
+# Completa los nombres de productos ausentes con 'Unknown'
+df_products["product_name"].fillna("Unknown", inplace=True)
