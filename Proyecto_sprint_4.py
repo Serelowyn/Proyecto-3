@@ -45,3 +45,7 @@ df_products
 prod_duplicados = df_products["product_id"]
 prod_duplicados.drop_duplicates(inplace=True)
 prod_duplicados
+
+# Revisa únicamente si hay nombres duplicados de productos (convierte los nombres a letras mayúsculas para compararlos mejor)
+df_products["product_name"] = df_products["product_name"].str.upper()
+df_products[df_products["product_name"].duplicated()]
