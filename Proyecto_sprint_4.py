@@ -55,3 +55,5 @@ df_products[df_products["product_name"].duplicated()]
 df_products[df_products["product_name"].notna() & df_products["product_name"].duplicated()]
 
 
+### `departments` data frame ------------------------------------
+
