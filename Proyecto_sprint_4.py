@@ -57,3 +57,8 @@ df_products[df_products["product_name"].notna() & df_products["product_name"].du
 
 ### `departments` data frame ------------------------------------
 
+# ------------------- revisar si hay filas duplicadas
+df_departments[df_departments.duplicated()]
+
+# ----------------- revisa únicamente si hay IDs duplicadas de departamentos
+df_departments[df_departments["department_id"].duplicated()]
