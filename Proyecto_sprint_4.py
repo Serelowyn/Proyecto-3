@@ -99,3 +99,27 @@ id21
 
 # Completa los nombres de productos ausentes con 'Unknown'
 df_products["product_name"].fillna("Unknown", inplace=True)
+
+### ---------------------- `orders` data frame -----------------------------------
+
+# Encuentra los valores ausentes
+print(df_orders.isna().sum())
+
+
+# ¿Hay algún valor ausente que no sea el primer pedido del cliente?
+nan_orders = df_orders[df_orders["days_since_prior_order"].isna()]
+print("Pedidos con valores ausentes en days_since_prior_order:")
+print(nan_orders.head())
+
+# ¿Hay algún valor ausente que no sea el primer pedido del cliente?
+# Primero identificamos el primer pedido de cada usuario
+primer_pedido_orders = df_orders.sort_values(by=["user_id","order_number"]).groupby("user_id").first()
+
+# Comparamos los pedidos con NaN contra los primeros pedidos de cada usuario
+nan_orders_check = nan_orders.merge(primer_pedido_orders[["order_id"]], on="order_id", how="left", indicator=True)
+
+# Revisamos si todos los NaN coinciden con el primer pedido
+print(nan_orders_check["_merge"].value_counts())
+
+
+
