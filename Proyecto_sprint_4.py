@@ -29,7 +29,7 @@ print(df_orders)
 
 miercoles_2am = df_orders[(df_orders["order_dow"] == 3) & (df_orders["order_hour_of_day"] == 2)]
 miercoles_2am.drop_duplicates()
-miercoles_2am
+miercoles_2am.duplicated() #para verificar si hay duplicados
 
 # Vuelve a verificar únicamente si hay IDs duplicados de pedidos
 pedidos_duplicados = df_orders["order_id"]
@@ -49,5 +49,9 @@ prod_duplicados
 # Revisa únicamente si hay nombres duplicados de productos (convierte los nombres a letras mayúsculas para compararlos mejor)
 df_products["product_name"] = df_products["product_name"].str.upper()
 df_products[df_products["product_name"].duplicated()]
+
+
+# Revisa si hay nombres duplicados de productos no faltantes
+df_products[df_products["product_name"].notna() & df_products["product_name"].duplicated()]
 
 
