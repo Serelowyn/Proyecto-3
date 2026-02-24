@@ -64,10 +64,20 @@ df_departments[df_departments.duplicated()]
 df_departments[df_departments["department_id"].duplicated()]
 
 
-### ------------------- `order_products` data frame-----------------------
+### ------------------- `aisles` data frame-----------------------
 
 # Revisa si hay filas totalmente duplicadas
 df_aisles[df_aisles.duplicated()]
 
 # Revisa únicamente si hay IDs duplicadas de pasillos
 df_aisles[df_aisles["aisle_id"].duplicated()]
+
+
+### ----------------------- `order_products` data frame --------------------
+
+# Revisa si hay filas totalmente duplicadas
+df_orderproducts[df_orderproducts.duplicated()]
+
+# Vuelve a verificar si hay cualquier otro duplicado engañoso
+df_orderproducts[df_orderproducts.duplicated(subset=["order_id", "product_id"])]
+
