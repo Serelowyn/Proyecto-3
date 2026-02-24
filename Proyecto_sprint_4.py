@@ -55,10 +55,19 @@ df_products[df_products["product_name"].duplicated()]
 df_products[df_products["product_name"].notna() & df_products["product_name"].duplicated()]
 
 
-### `departments` data frame ------------------------------------
+### ------------------- `departments` data frame ------------------------------------
 
 # ------------------- revisar si hay filas duplicadas
 df_departments[df_departments.duplicated()]
 
 # ----------------- revisa únicamente si hay IDs duplicadas de departamentos
 df_departments[df_departments["department_id"].duplicated()]
+
+
+### ------------------- `order_products` data frame-----------------------
+
+# Revisa si hay filas totalmente duplicadas
+df_aisles[df_aisles.duplicated()]
+
+# Revisa únicamente si hay IDs duplicadas de pasillos
+df_aisles[df_aisles["aisle_id"].duplicated()]
