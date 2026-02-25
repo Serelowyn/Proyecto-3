@@ -170,3 +170,68 @@ print(df_orderproducts["add_to_cart_order"].isna().sum())
 
 # Revisar los primeros registros para confirmar el cambio
 print(df_orderproducts.head())
+
+
+
+
+
+# ------------------------------- PARTE FINAL ----------------------------------------
+
+
+#A
+
+
+
+# Verifica que los valores en las columnas 'order_hour_of_day' y 'order_dow' en la tabla orders sean razonables (es decir, 'order_hour_of_day' oscile entre 0 y 23 y 'order_dow' oscile entre 0 y 6).
+# Revisar valores únicos en ambas columnas
+print("unique en order_hour_of_day:", df_orders["order_hour_of_day"].unique())
+print("unique en order_dow:", df_orders["order_dow"].unique())
+
+# Verificar rangos
+print("min y max en order_hour_of_day:", df_orders["order_hour_of_day"].min(), df_orders["order_hour_of_day"].max())
+print("min y max en order_dow:", df_orders["order_dow"].min(), df_orders["order_dow"].max())
+
+
+# Crea un gráfico que muestre el número de personas que hacen pedidos dependiendo de la hora del día.
+pedidos_por_hora = df_orders["order_hour_of_day"].value_counts().sort_index().reset_index()
+pedidos_por_hora.columns = ["hora_del_dia", "num_pedidos"]
+pedidos_por_hora.plot(
+    x="hora_del_dia",
+    y="num_pedidos",
+    title="Numero de pedidos por hora del dia",
+    kind="bar",
+    grid=True
+)
+plt.show()
+
+# Crea un gráfico que muestre qué día de la semana la gente hace sus compras.
+pedidos_por_dia = df_orders["order_dow"].value_counts().sort_index()
+
+pedidos_por_dia = df_orders["order_dow"].value_counts().sort_index().reset_index()
+pedidos_por_dia.columns = ["dia_semana", "num_pedidos"]
+
+pedidos_por_dia.plot(
+    x="dia_semana",
+    y="num_pedidos",
+    title="Numero de pedidos por día de la semana",
+    kind="bar",
+    grid=True
+)
+plt.show()
+
+# Crea un gráfico que muestre el tiempo que la gente espera hasta hacer su siguiente pedido, y comenta sobre los valores mínimos y máximos.
+
+tiempo_pedidos = df_orders["days_since_prior_order"].value_counts().sort_index().reset_index()
+tiempo_pedidos.columns = ["dias_espera", "num_pedidos"]
+
+tiempo_pedidos.plot(
+    x="dias_espera",
+    y="num_pedidos",
+    title="Tiempo hasta el siguiente pedido",
+    kind="bar",
+    grid=True
+)
+plt.show()
+
+print("minimo en days_since_prior_order:", df_orders["days_since_prior_order"].min())
+print("maximo en days_since_prior_order:", df_orders["days_since_prior_order"].max())
