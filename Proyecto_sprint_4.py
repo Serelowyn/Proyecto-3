@@ -235,3 +235,52 @@ plt.show()
 
 print("minimo en days_since_prior_order:", df_orders["days_since_prior_order"].min())
 print("maximo en days_since_prior_order:", df_orders["days_since_prior_order"].max())
+
+
+
+
+#B
+
+
+
+# ¿Existe alguna diferencia entre las distribuciones 'order_hour_of_day' de los miércoles y los sábados? Traza gráficos de barra de 'order_hour_of_day' para ambos días en la misma figura y describe las diferencias que observes.
+
+pedidos_miercoles = df_orders[df_orders["order_dow"] == 3]["order_hour_of_day"].value_counts().sort_index().reset_index()
+pedidos_miercoles.columns = ["hora", "num_pedidos"]
+pedidos_sabado = df_orders[df_orders["order_dow"] == 6]["order_hour_of_day"].value_counts().sort_index().reset_index()
+pedidos_sabado.columns = ["hora", "num_pedidos"]
+
+grafica = pedidos_miercoles.plot(x="hora",
+                                 y="num_pedidos",
+                                 style="o-", grid=True, label="miercoles", title="Pedidos por hora: miercoles vs sabado")
+pedidos_sabado.plot(x="hora", y="num_pedidos", style="o-", grid=True, label="sabado", ax=grafica)
+plt.show()
+
+
+
+### [B2] ¿Cuál es la distribución para el número de pedidos por cliente?
+
+# Contar cuántos pedidos hizo cada clientew
+pedidos_por_cliente = df_orders.groupby("user_id")["order_id"].count().value_counts().reset_index()
+pedidos_por_cliente.columns = ["num_pedidos_por_cliente", "num_clientes"]
+
+# Graficar distribución
+pedidos_por_cliente.plot(
+    x="num_pedidos_por_cliente",
+    y="num_clientes",
+    kind="bar",
+    grid=True,
+    title="distribucion del num de pedidos por cliente"
+)
+plt.show()
+
+
+### [B3] ¿Cuáles son los 20 productos más populares (muestra su ID y nombre)?
+
+# Contar frecuencia de cada producto
+productos_mas_pedidos = df_orderproducts["product_id"].value_counts().reset_index().head(20)
+productos_mas_pedidos.columns = ["product_id", "num_pedidos"]
+
+# Unir con la tabla de productos para obtener nombres
+top20_productos = productos_mas_pedidos.merge(df_products[["product_id", "product_name"]], on="product_id", how="left")
+print(top20_productos)
