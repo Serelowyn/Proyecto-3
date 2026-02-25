@@ -116,10 +116,57 @@ print(nan_orders.head())
 primer_pedido_orders = df_orders.sort_values(by=["user_id","order_number"]).groupby("user_id").first()
 
 # Comparamos los pedidos con NaN contra los primeros pedidos de cada usuario
-nan_orders_check = nan_orders.merge(primer_pedido_orders[["order_id"]], on="order_id", how="left", indicator=True)
+nan_orders_check = nan_orders.merge(
+    primer_pedido_orders[["order_id"]],
+    on="order_id",
+    how="left",
+    indicator=True)
 
 # Revisamos si todos los NaN coinciden con el primer pedido
 print(nan_orders_check["_merge"].value_counts())
 
+##### opcional 2
+na_orders_not_first = df_orders[
+    df_orders["days_since_prior_order"].isna() & (df_orders["order_number"] > 1)
+]
+print(na_orders_not_first)
+#####
 
 
+# ------------------------------ Order_Products DataFram ----------------------------------
+
+# Encuentra los valores ausentes en la columna 'add_to_cart_order'
+print(df_orderproducts)
+print(df_orderproducts.isna().sum())
+
+# ¿Cuáles son los valores mínimos y máximos en esta columna?
+print("Valor mínimo:", df_orderproducts["add_to_cart_order"].min())
+print("Valor máximo:", df_orderproducts["add_to_cart_order"].max())
+
+# Guarda todas las IDs de pedidos que tengan un valor ausente en 'add_to_cart_order'
+nan_cart = df_orderproducts[df_orderproducts["add_to_cart_order"].isna()]
+nan_order_ids = nan_cart["order_id"].unique()
+print(nan_order_ids)
+
+
+# Filtrar solo los pedidos con valores ausentes en add_to_cart_order
+pedidos_nulos = df_orderproducts[df_orderproducts["add_to_cart_order"].isna()]
+# Agrupar esos pedidos por order_id y contar cuántos productos tiene cada uno
+nulos_agrupados_productid = pedidos_nulos.groupby("order_id")["product_id"].count()
+print(nulos_agrupados_productid)
+# Revisar el valor mínimo del conteo
+print("Valor minimo:", nulos_agrupados_productid.min())
+print("Valor maximo:", nulos_agrupados_productid.max())
+
+
+# Reemplazar los valores ausentes en la columna 'add_to_cart_order' con 999
+df_orderproducts["add_to_cart_order"] = df_orderproducts["add_to_cart_order"].fillna(999)
+
+# Convertir la columna al tipo entero
+df_orderproducts["add_to_cart_order"] = df_orderproducts["add_to_cart_order"].astype(int)
+
+# Verificar que ya no haya valores ausentes
+print(df_orderproducts["add_to_cart_order"].isna().sum())
+
+# Revisar los primeros registros para confirmar el cambio
+print(df_orderproducts.head())
