@@ -284,3 +284,171 @@ productos_mas_pedidos.columns = ["product_id", "num_pedidos"]
 # Unir con la tabla de productos para obtener nombres
 top20_productos = productos_mas_pedidos.merge(df_products[["product_id", "product_name"]], on="product_id", how="left")
 print(top20_productos)
+
+
+
+
+
+#C
+
+
+
+
+
+
+# ¿Cuántos artículos suelen comprar las personas en un pedido? ¿Cómo es la distribución?
+
+# Contar cuántos productos tiene cada pedido
+productos_por_pedido = df_orderproducts.groupby("order_id")["product_id"].count().reset_index()
+productos_por_pedido.columns = ["pedido_id", "num_productos"]
+
+# Graficar distribución
+productos_por_pedido.plot(
+    x="pedido_id",
+    y="num_productos",
+    kind="hist",
+    bins=30,
+    title="Distribución del número de productos por pedido",
+    grid=True
+)
+plt.show()
+
+print("minimo:", productos_por_pedido["num_productos"].min())
+print("maximo:", productos_por_pedido["num_productos"].max())
+
+
+#  Los 20 principales artículos que vuelven a pedirse con mayor frecuencia
+
+# Filtrar productos que fueron reordenados
+productos_reordenados = df_orderproducts[df_orderproducts["reordered"] == 1]
+
+# Contar frecuencia de reorden
+top20_reordenados = productos_reordenados["product_id"].value_counts().reset_index().head(20)
+top20_reordenados.columns = ["product_id", "num_reordenes"]
+
+# Unir con nombres de productos
+top20_reordenados = top20_reordenados.merge(df_products[["product_id", "product_name"]], on="product_id", how="left")
+print(top20_reordenados)
+
+top20_reordenados.plot(
+    x="product_name",
+    y="num_reordenes",
+    kind="bar",
+    title="Top 20 productos mas reordenados",
+    grid=True,
+    figsize=(12,6)
+)
+plt.xticks(rotation=75)  # Rotar etiquetas para que se lean mejor
+plt.ylabel("Número de reordenes")
+plt.xlabel("Producto")
+plt.show()
+
+
+# 3. Tasa de repetición del pedido por producto
+
+
+# Total de pedidos por producto
+total_por_producto = df_orderproducts.groupby("product_id")["order_id"].count().reset_index()
+total_por_producto.columns = ["product_id", "total_pedidos"]
+
+# Número de veces reordenado por producto
+reordenes_por_producto = df_orderproducts.groupby("product_id")["reordered"].sum().reset_index()
+reordenes_por_producto.columns = ["product_id", "num_reordenes"]
+
+# Unir ambas tablas
+tasa_repeticion_producto = total_por_producto.merge(reordenes_por_producto, on="product_id")
+
+# Calcular proporción
+tasa_repeticion_producto["proporcion_reorden"] = (
+    tasa_repeticion_producto["num_reordenes"] / tasa_repeticion_producto["total_pedidos"]
+)
+
+# Agregar nombres de productos
+tasa_repeticion_producto = tasa_repeticion_producto.merge(
+    df_products[["product_id", "product_name"]],
+    on="product_id",
+    how="left"
+)
+
+# Mostrar primeros resultados
+print(tasa_repeticion_producto.head())
+
+
+
+top20_tasa_repeticion = tasa_repeticion_producto.sort_values(
+    by="proporcion_reorden", ascending=False
+).head(20)
+
+# Graficar
+top20_tasa_repeticion.plot(
+    x="product_name",
+    y="proporcion_reorden",
+    kind="bar",
+    title="Top 20 productos por tasa de repeticion",
+    grid=True,
+    figsize=(12,6)
+)
+
+plt.xticks(rotation=75)
+plt.ylabel("proporcion de recompra")
+plt.xlabel("producto")
+plt.show()
+
+
+
+# 4. Tasa de repetición del pedido por cliente
+
+
+# Calcular tasa de repetición por usuario
+tasa_repeticion_usuario = df_orders.merge(df_orderproducts, on="order_id")
+tasa_repeticion_usuario = tasa_repeticion_usuario.groupby("user_id")["reordered"].mean().reset_index()
+tasa_repeticion_usuario.columns = ["user_id", "tasa_repeticion"]
+
+print(tasa_repeticion_usuario.head())
+
+# Histograma de la tasa de repetición por usuario
+tasa_repeticion_usuario.plot(
+    y="tasa_repeticion",
+    kind="hist",
+    bins=30,
+    title="distribucion de la tasa de repeticion por cliente",
+    grid=True,
+    figsize=(10,6),
+    color="purple"
+)
+
+plt.xlabel("proporcion de recompra (0 - 1)")
+plt.ylabel("num de clientes")
+plt.show()
+
+
+
+# 5. Los 20 principales artículos que la gente pone primero en sus carritos
+
+
+# Filtrar productos que fueron el primero en el carrito
+primeros_productos = df_orderproducts[df_orderproducts["add_to_cart_order"] == 1]
+
+# Contar frecuencia
+top20_primeros = primeros_productos["product_id"].value_counts().reset_index().head(20)
+top20_primeros.columns = ["product_id", "num_veces_primer"]
+
+# Unir con nombres de productos
+top20_primeros = top20_primeros.merge(df_products[["product_id", "product_name"]], on="product_id", how="left")
+print(top20_primeros)
+
+# Gráfico de los 20 productos que más veces fueron primeros en el carrito
+top20_primeros.plot(
+    x="product_name",
+    y="num_veces_primer",
+    kind="bar",
+    title="top 20 productos añadidos primero al carrito",
+    grid=True,
+    figsize=(12,6),
+    color="teal"
+)
+
+plt.xticks(rotation=75)
+plt.ylabel("num de veces como primer producto")
+plt.xlabel("producto")
+plt.show()
